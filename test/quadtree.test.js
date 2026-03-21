@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { createQuadtree } from '../index.js'
+import { createQuadtree } from '../src/index.js'
 import {
   point, rect, circle, bounds,
   SPATIAL_INDEX, isSpatialIndex

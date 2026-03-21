@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "quadtree spatial index for sparse, uneven point and region data",
   "type": "module",
-  "main": "index.js",
+  "main": "src/index.js",
+  "types": "./types/index.d.ts",
   "exports": {
-    ".": "./index.js"
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.js"
+    }
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "prepublishOnly": "npx tsc --declaration --allowJs --emitDeclarationOnly --skipLibCheck --target es2020 --module nodenext --moduleResolution nodenext --strict false --esModuleInterop true --outDir ./types src/index.js"
   },
   "keywords": [
     "quadtree",
@@ -26,10 +31,13 @@
     "url": "https://github.com/gridworkjs/quadtree.git"
   },
   "files": [
-    "index.js",
-    "src/"
+    "src/",
+    "types/"
   ],
   "dependencies": {
     "@gridworkjs/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }

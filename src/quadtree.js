@@ -3,6 +3,32 @@ import {
   intersects, contains, distanceToPoint
 } from '@gridworkjs/core'
 
+/**
+ * @typedef {{ minX: number, minY: number, maxX: number, maxY: number }} Bounds
+ * @typedef {{ x: number, y: number }} Point
+ * @typedef {(item: T) => Bounds} Accessor
+ * @template T
+ */
+
+/**
+ * @typedef {object} QuadtreeOptions
+ * @property {Bounds} [bounds] - fixed world bounds (auto-grows if omitted)
+ * @property {number} [maxItems=16] - items per node before splitting
+ * @property {number} [maxDepth=8] - maximum tree depth
+ */
+
+/**
+ * @typedef {object} SpatialIndex
+ * @property {true} [SPATIAL_INDEX]
+ * @property {number} size
+ * @property {Bounds | null} bounds
+ * @property {(item: any) => void} insert
+ * @property {(item: any) => boolean} remove
+ * @property {(query: Bounds | object) => any[]} search
+ * @property {(point: Point, k?: number) => any[]} nearest
+ * @property {() => void} clear
+ */
+
 function createNode(bounds) {
   return { bounds, items: [], children: null }
 }
@@ -148,7 +174,6 @@ function normalizeBounds(input) {
   return toBounds(input)
 }
 
-// min heap for nearest-neighbor priority queue
 function heapPush(heap, entry) {
   heap.push(entry)
   let i = heap.length - 1
@@ -212,6 +237,13 @@ function nearestSearch(root, px, py, k) {
   return results
 }
 
+/**
+ * Creates a quadtree spatial index.
+ *
+ * @param {(item: any) => Bounds} accessor - maps items to their bounding boxes
+ * @param {QuadtreeOptions} [options]
+ * @returns {SpatialIndex}
+ */
 export function createQuadtree(accessor, options = {}) {
   const maxItems = options.maxItems ?? 16
   const maxDepth = options.maxDepth ?? 8
