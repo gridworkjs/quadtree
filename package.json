@@ -1,0 +1,35 @@
+{
+  "name": "@gridworkjs/quadtree",
+  "version": "1.0.0",
+  "description": "quadtree spatial index for sparse, uneven point and region data",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "quadtree",
+    "spatial",
+    "spatial-index",
+    "gridwork",
+    "point",
+    "region",
+    "search",
+    "nearest-neighbor"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gridworkjs/quadtree.git"
+  },
+  "files": [
+    "index.js",
+    "src/"
+  ],
+  "dependencies": {
+    "@gridworkjs/core": "^1.0.0"
+  }
+}
