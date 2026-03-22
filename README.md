@@ -6,46 +6,43 @@
 
 <p align="center">quadtree spatial index for sparse, uneven point and region data</p>
 
-## install
+## Install
 
 ```
 npm install @gridworkjs/quadtree
 ```
 
-## usage
+## Usage
+
+A 2D game where entities spawn and despawn dynamically. The quadtree tracks their positions so you can efficiently query who's nearby:
 
 ```js
 import { createQuadtree } from '@gridworkjs/quadtree'
 import { point, rect, bounds } from '@gridworkjs/core'
 
-// create a quadtree with a bounds accessor
-const tree = createQuadtree(item => bounds(item.position))
+const entities = createQuadtree(e => bounds(e.position))
 
-// insert items - any shape, the accessor extracts bounds
-tree.insert({ id: 1, position: point(10, 20) })
-tree.insert({ id: 2, position: point(50, 60) })
-tree.insert({ id: 3, position: rect(70, 70, 90, 90) })
+// entities come and go at arbitrary positions
+entities.insert({ name: 'player', position: point(100, 200) })
+entities.insert({ name: 'goblin', position: point(120, 210) })
+entities.insert({ name: 'chest', position: point(400, 50) })
+entities.insert({ name: 'trap', position: rect(110, 190, 130, 220) })
 
-// search for items intersecting a region
-tree.search({ minX: 0, minY: 0, maxX: 55, maxY: 65 })
-// => [{ id: 1, ... }, { id: 2, ... }]
+// who's in the player's field of view?
+entities.search(rect(50, 150, 200, 300))
+// => [player, goblin, trap]
 
-// also accepts geometry objects as queries
-tree.search(rect(0, 0, 55, 65))
+// what's closest to the goblin for it to target?
+entities.nearest({ x: 120, y: 210 }, 2)
+// => [goblin, player]
 
-// find nearest neighbors
-tree.nearest({ x: 12, y: 22 }, 2)
-// => [{ id: 1, ... }, { id: 2, ... }]
-
-// remove by identity
-tree.remove(item)
-
-tree.size   // number of items
-tree.bounds // current root bounds
-tree.clear()
+// entity defeated - remove it
+entities.remove(goblin)
 ```
 
-## options
+Quadtrees handle sparse, uneven data well. Entities can cluster in one corner or spread across the whole map - the tree adapts its subdivision to match.
+
+## Options
 
 ```js
 createQuadtree(accessor, {
@@ -93,6 +90,6 @@ Number of items in the tree.
 
 Current root bounds, or `null` if empty and no fixed bounds were set.
 
-## license
+## License
 
 MIT
