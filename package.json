@@ -1,6 +1,6 @@
 {
   "name": "@gridworkjs/quadtree",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "quadtree spatial index for sparse, uneven point and region data",
   "type": "module",
   "main": "src/index.js",
