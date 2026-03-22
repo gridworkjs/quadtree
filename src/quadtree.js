@@ -255,6 +255,8 @@ export function createQuadtree(accessor, options = {}) {
   const index = {
     [SPATIAL_INDEX]: true,
 
+    accessor,
+
     get size() { return size },
 
     get bounds() { return root ? root.bounds : null },
