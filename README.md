@@ -24,7 +24,8 @@ const entities = createQuadtree(e => bounds(e.position))
 
 // entities come and go at arbitrary positions
 entities.insert({ name: 'player', position: point(100, 200) })
-entities.insert({ name: 'goblin', position: point(120, 210) })
+const goblin = { name: 'goblin', position: point(120, 210) }
+entities.insert(goblin)
 entities.insert({ name: 'chest', position: point(400, 50) })
 entities.insert({ name: 'trap', position: rect(110, 190, 130, 220) })
 
@@ -36,7 +37,7 @@ entities.search(rect(50, 150, 200, 300))
 entities.nearest({ x: 120, y: 210 }, 2)
 // => [goblin, player]
 
-// entity defeated - remove it
+// entity defeated - remove it (by reference)
 entities.remove(goblin)
 ```
 

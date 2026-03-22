@@ -457,3 +457,38 @@ describe('accessor validation', () => {
     assert.throws(() => tree.insert({ id: 1 }), /inverted bounds/)
   })
 })
+
+describe('accessor property', () => {
+  it('exposes the accessor function', () => {
+    const fn = item => item.geo
+    const tree = createQuadtree(fn)
+    assert.equal(tree.accessor, fn)
+  })
+})
+
+describe('remove straddling items', () => {
+  it('removes items stored in parent nodes', () => {
+    const tree = createQuadtree(accessor, { maxItems: 2, maxDepth: 4 })
+    const items = [
+      { id: 0, geo: point(25, 25) },
+      { id: 1, geo: point(75, 75) },
+      { id: 2, geo: point(25, 75) },
+      { id: 3, geo: rect(40, 40, 60, 60) }
+    ]
+    for (const item of items) tree.insert(item)
+    assert.equal(tree.remove(items[3]), true)
+    assert.equal(tree.size, 3)
+    assert.equal(tree.search(rect(40, 40, 60, 60)).length, 0)
+  })
+})
+
+describe('nearest with region items', () => {
+  it('computes distance to rectangle edge', () => {
+    const tree = createQuadtree(accessor)
+    tree.insert({ id: 0, geo: rect(10, 10, 20, 20) })
+    tree.insert({ id: 1, geo: rect(50, 50, 60, 60) })
+    const results = tree.nearest({ x: 0, y: 0 }, 1)
+    assert.equal(results.length, 1)
+    assert.equal(results[0].id, 0)
+  })
+})
