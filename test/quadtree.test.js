@@ -440,3 +440,20 @@ describe('stress', () => {
     }
   })
 })
+
+describe('accessor validation', () => {
+  it('throws on NaN bounds from accessor', () => {
+    const tree = createQuadtree(() => ({ minX: NaN, minY: 0, maxX: 10, maxY: 10 }))
+    assert.throws(() => tree.insert({ id: 1 }), /non-finite bounds/)
+  })
+
+  it('throws on Infinity bounds from accessor', () => {
+    const tree = createQuadtree(() => ({ minX: 0, minY: 0, maxX: Infinity, maxY: 10 }))
+    assert.throws(() => tree.insert({ id: 1 }), /non-finite bounds/)
+  })
+
+  it('throws on inverted bounds from accessor', () => {
+    const tree = createQuadtree(() => ({ minX: 10, minY: 0, maxX: 0, maxY: 10 }))
+    assert.throws(() => tree.insert({ id: 1 }), /inverted bounds/)
+  })
+})

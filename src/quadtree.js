@@ -166,6 +166,19 @@ function growToContain(root, target) {
   return root
 }
 
+function validateAccessorBounds(b) {
+  if (b === null || typeof b !== 'object') {
+    throw new Error('accessor must return a bounds object')
+  }
+  if (!Number.isFinite(b.minX) || !Number.isFinite(b.minY) ||
+      !Number.isFinite(b.maxX) || !Number.isFinite(b.maxY)) {
+    throw new Error('accessor returned non-finite bounds')
+  }
+  if (b.minX > b.maxX || b.minY > b.maxY) {
+    throw new Error('accessor returned inverted bounds (minX > maxX or minY > maxY)')
+  }
+}
+
 function normalizeBounds(input) {
   if (input != null && typeof input === 'object' &&
       'minX' in input && 'minY' in input && 'maxX' in input && 'maxY' in input) {
@@ -263,6 +276,7 @@ export function createQuadtree(accessor, options = {}) {
 
     insert(item) {
       const itemBounds = accessor(item)
+      validateAccessorBounds(itemBounds)
       const entry = { item, bounds: itemBounds }
 
       if (!root) {
@@ -286,6 +300,7 @@ export function createQuadtree(accessor, options = {}) {
     remove(item) {
       if (!root) return false
       const itemBounds = accessor(item)
+      validateAccessorBounds(itemBounds)
       const removed = removeEntry(root, item, itemBounds)
       if (removed) size--
       return removed
