@@ -34,8 +34,8 @@ entities.search(rect(50, 150, 200, 300))
 // => [player, goblin, trap]
 
 // what's closest to the goblin for it to target?
-entities.nearest({ x: 120, y: 210 }, 2)
-// => [goblin, player]
+entities.nearest({ x: 120, y: 210 }, 3)
+// => [goblin, trap, player]
 
 // entity defeated - remove it (by reference)
 entities.remove(goblin)
