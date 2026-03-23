@@ -458,6 +458,34 @@ describe('accessor validation', () => {
   })
 })
 
+describe('query validation', () => {
+  it('nearest throws on NaN point', () => {
+    const tree = createQuadtree(accessor)
+    tree.insert({ id: 0, geo: point(10, 10) })
+    assert.throws(() => tree.nearest({ x: NaN, y: 0 }), /nearest requires a point with finite x and y/)
+  })
+
+  it('nearest throws on undefined x/y', () => {
+    const tree = createQuadtree(accessor)
+    tree.insert({ id: 0, geo: point(10, 10) })
+    assert.throws(() => tree.nearest({ x: undefined, y: 0 }), /nearest requires a point with finite x and y/)
+  })
+
+  it('nearest throws on empty tree with invalid point', () => {
+    const tree = createQuadtree(accessor)
+    assert.throws(() => tree.nearest({ x: NaN, y: 0 }), /nearest requires a point with finite x and y/)
+  })
+
+  it('search throws on NaN bounds', () => {
+    const tree = createQuadtree(accessor)
+    tree.insert({ id: 0, geo: point(10, 10) })
+    assert.throws(
+      () => tree.search({ minX: NaN, minY: 0, maxX: 10, maxY: 10 }),
+      /search requires bounds with finite values/
+    )
+  })
+})
+
 describe('accessor property', () => {
   it('exposes the accessor function', () => {
     const fn = item => item.geo

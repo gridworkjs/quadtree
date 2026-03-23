@@ -3,11 +3,11 @@ import {
   intersects, contains, distanceToPoint
 } from '@gridworkjs/core'
 
+/** @typedef {{ minX: number, minY: number, maxX: number, maxY: number }} Bounds */
+/** @typedef {{ x: number, y: number }} Point */
 /**
- * @typedef {{ minX: number, minY: number, maxX: number, maxY: number }} Bounds
- * @typedef {{ x: number, y: number }} Point
- * @typedef {(item: T) => Bounds} Accessor
  * @template T
+ * @typedef {(item: T) => Bounds} Accessor
  */
 
 /**
@@ -309,12 +309,19 @@ export function createQuadtree(accessor, options = {}) {
     search(query) {
       if (!root) return []
       const queryBounds = normalizeBounds(query)
+      if (!Number.isFinite(queryBounds.minX) || !Number.isFinite(queryBounds.minY) ||
+          !Number.isFinite(queryBounds.maxX) || !Number.isFinite(queryBounds.maxY)) {
+        throw new Error('search requires bounds with finite values')
+      }
       const results = []
       searchNode(root, queryBounds, results)
       return results
     },
 
     nearest(point, k = 1) {
+      if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+        throw new Error('nearest requires a point with finite x and y')
+      }
       if (!root) return []
       return nearestSearch(root, point.x, point.y, k)
     },
